@@ -7,21 +7,16 @@ flag=$1
 
 shift
 count=$#
-while test ${#} -gt 0
-do
+for arg in $@; do
   if [[ $1 =~ ^-?[0-9]+$ ]]; then
-#    echo $1
-    if [[ $flag == "-o" && $(($1%2)) -eq 0 ]]; then
-      shift
+    if [[ $flag == "-o" && $(($arg%2)) -eq 0 ]]; then
       continue
     fi
-    if [[ $flag == "-e" && $(($1%2)) -eq 1 ]]; then
-      shift
+    if [[ $flag == "-e" && $(($arg%2)) -eq 1 ]]; then
       continue
     fi
-    str+=$1
+    str+=$arg
     str+="+"
-    shift
   else
     echo "Error.."
     exit 1
@@ -30,18 +25,12 @@ done
 str+="0"
 
 case $flag in
-  "-s" )
+  "-s" | "-o" | "-e" )
     echo $str | bc
     ;;
   "-m" )
     str="("$str")"
     str+="/"$count
-    echo $str | bc
-    ;;
-  "-o" )
-    echo $str | bc
-    ;;
-  "-e" )
     echo $str | bc
     ;;
   * )
